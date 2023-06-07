@@ -4,7 +4,7 @@
 
 Here are some demo results:
 
-<img src="visualization/1000.gif" width=45%> <img src="visualization/1009.gif" width=45%>
+<img src="visualization/Figure_3a.gif" width=45%> <img src="visualization/Figure_3b.gif" width=45%>
 
 # Installation:
 
