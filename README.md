@@ -1,4 +1,4 @@
-# GMSF
+# GMSF: Global Matching Scene Flow
 
 ## Get started
 
