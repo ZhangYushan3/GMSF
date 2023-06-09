@@ -7,11 +7,6 @@
 > Arxiv 2023
 
 ## Get started
-
-Here are some demo results:
-
-<img src="visualization/Figure_3a.mp4" width=40%> <img src="visualization/Figure_3b.mp4" width=40%>
-
 # Installation:
 
 Create a conda environment:
