@@ -121,7 +121,7 @@ python main_gmsf.py \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels_point 128 \
+    --feature_channels 128 \
     --lr 2e-4 --batch_size 8 --num_steps 600000
 ```
 Training (HPLFlowNet without occlusion): 
@@ -133,7 +133,7 @@ python main_gmsf.py \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels_point 128 \
+    --feature_channels 128 \
     --lr 4e-4 --batch_size 8 --num_steps 600000
 ```
 Training (FlowNet3D with occlusion): 
@@ -145,7 +145,7 @@ python main_gmsf.py \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels_point 128 \
+    --feature_channels 128 \
     --lr 4e-4 --batch_size 8 --num_steps 600000
 ```
 Testing (HPLFlowNet / CamLiFlow with occlusion): 
@@ -156,7 +156,7 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels_point 128 \
+    --feature_channels 128 \
     --eval
 ```
 Testing (HPLFlowNet without occlusion):  
@@ -167,7 +167,7 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels_point 128 \
+    --feature_channels 128 \
     --eval
 ```
 Testing (FlowNet3D with occlusion): 
@@ -178,7 +178,7 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels_point 128 \
+    --feature_channels 128 \
     --eval
 ```
 
