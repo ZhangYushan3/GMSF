@@ -3,48 +3,29 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-# GMFlow Transformer
+# Global-Cross Transformer
 def single_head_full_attention(q, k, v):
-    # q, k, v: [B, L, C]
+    # q, k, v: [B, N, C]
     assert q.dim() == k.dim() == v.dim() == 3
 
-    scores = torch.matmul(q, k.permute(0, 2, 1)) / (q.size(2) ** .5)  # [B, L, L]
-    attn = torch.softmax(scores, dim=2)  # [B, L, L]
-    out = torch.matmul(attn, v)  # [B, L, C]
-
-    return out
-
-def multi_head_full_attention(q, k, v, num_head):
-    # q, k, v: [B, L, C]
-    assert q.dim() == k.dim() == v.dim() == 3
-    assert q.size(2) % num_head == 0
-    B, N ,C = q.shape
-
-    q, k, v = q.view(B, N, num_head, C//num_head), k.view(B, N, num_head, C//num_head), v.view(B, N, num_head, C//num_head)
-    # Transpose for attention dot product: B, num_head, N, C//num_head
-    q, k, v = q.transpose(1, 2), k.transpose(1, 2), v.transpose(1, 2)
-
-    scores = torch.matmul(q, k.transpose(2, 3)) / (q.size(3) ** .5)  # [B, num_head, N, N]
-    attn = torch.softmax(scores, dim=-1)  # [B, num_head, N, N]
-    out = torch.matmul(attn, v)  # [B, num_head, N, C//num_head]
-    out = out.transpose(1, 2).contiguous().view(B, N, -1)
+    scores = torch.matmul(q, k.permute(0, 2, 1)) / (q.size(2) ** .5)  # [B, N, N]
+    attn = torch.softmax(scores, dim=2)  # [B, N, N]
+    out = torch.matmul(attn, v)  # [B, N, C]
 
     return out
 
 class TransformerLayer(nn.Module):
     def __init__(self,
                  d_model=128,
-                 nhead=1,
                  no_ffn=False,
                  ffn_dim_expansion=4,
                  ):
         super(TransformerLayer, self).__init__()
 
         self.dim = d_model
-        self.nhead = nhead
         self.no_ffn = no_ffn
 
-        # multi-head attention
+        # single-head attention
         self.q_proj = nn.Linear(d_model, d_model, bias=False)
         self.k_proj = nn.Linear(d_model, d_model, bias=False)
         self.v_proj = nn.Linear(d_model, d_model, bias=False)
@@ -76,10 +57,8 @@ class TransformerLayer(nn.Module):
         key = self.k_proj(key)  # [B, L, C]
         value = self.v_proj(value)  # [B, L, C]
 
-        if self.nhead == 1:
-            message = single_head_full_attention(query, key, value)  # [B, L, C]
-        else:
-            message = multi_head_full_attention(query, key, value, self.nhead)  # [B, L, C]
+        message = single_head_full_attention(query, key, value)  # [B, L, C]
+
         message = self.merge(message)  # [B, L, C]
         message = self.norm1(message)
 
@@ -95,19 +74,16 @@ class TransformerBlock(nn.Module):
 
     def __init__(self,
                  d_model=128,
-                 nhead=1,
                  ffn_dim_expansion=4,
                  ):
         super(TransformerBlock, self).__init__()
 
         self.self_attn = TransformerLayer(d_model=d_model,
-                                          nhead=nhead,
                                           no_ffn=True,
                                           ffn_dim_expansion=ffn_dim_expansion,
                                           )
 
         self.cross_attn_ffn = TransformerLayer(d_model=d_model,
-                                               nhead=nhead,
                                                ffn_dim_expansion=ffn_dim_expansion,
                                                )
 
@@ -135,17 +111,14 @@ class FeatureTransformer3D(nn.Module):
     def __init__(self,
                  num_layers=6,
                  d_model=128,
-                 nhead=1,
                  ffn_dim_expansion=4,
                  ):
         super(FeatureTransformer3D, self).__init__()
 
         self.d_model = d_model
-        self.nhead = nhead
 
         self.layers = nn.ModuleList([
             TransformerBlock(d_model=d_model,
-                             nhead=nhead,
                              ffn_dim_expansion=ffn_dim_expansion,
                              )
             for i in range(num_layers)])
@@ -225,7 +198,7 @@ def index_points(points, idx):
     return points[idx].reshape(B,S,K,C)
 
 class TransformerBlock_PT(nn.Module):
-    def __init__(self, d_points, d_model, nhead, k) -> None:
+    def __init__(self, d_points, d_model, k) -> None:
         super().__init__()
         self.fc1 = nn.Linear(d_points, d_model)
         self.fc2 = nn.Linear(d_model, d_points)
@@ -270,19 +243,16 @@ class FeatureTransformer3D_PT(nn.Module):
     def __init__(self,
                  num_layers=1,
                  d_points=16,
-                 nhead=1,
                  ffn_dim_expansion=4,
                  ):
         super(FeatureTransformer3D_PT, self).__init__()
 
         self.d_points = d_points
-        self.nhead = nhead
         self.d_model = d_points * ffn_dim_expansion
 
         self.layers = nn.ModuleList([
             TransformerBlock_PT(d_points=self.d_points,
                                d_model=self.d_model,
-                               nhead = self.nhead, 
                                k=16,
                                )
             for i in range(num_layers)])
@@ -301,18 +271,9 @@ class FeatureTransformer3D_PT(nn.Module):
         feature0 = feature0.permute(0, 2, 1)  # [B, N, C]
         feature1 = feature1.permute(0, 2, 1)  # [B, N, C]
 
-#        # concat feature0 and feature1 in batch dimension to compute in parallel
-#        concat0 = torch.cat((feature0, feature1), dim=0)  # [2B, N, C]
-#        concat1 = torch.cat((feature1, feature0), dim=0)  # [2B, N, C]
-
         for i, layer in enumerate(self.layers):
             feature0, _ = layer(xyz0, feature0)
             feature1, _ = layer(xyz1, feature1)
-
-#            # update feature1
-#            concat1 = torch.cat(concat0.chunk(chunks=2, dim=0)[::-1], dim=0)
-
-#        feature0, feature1 = concat0.chunk(chunks=2, dim=0)  # [B, H*W, C]
 
         # reshape back
         feature0 = feature0.view(b, n, c).permute(0, 2, 1).contiguous()  # [B, C, N]

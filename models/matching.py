@@ -45,7 +45,7 @@ def global_selfcorrelation_softmax_3d(feature0, flow
 
     return flow, prob
 
-class SelfAttnPropagation3D(nn.Module):
+class SelfCorrelationSoftmax3D(nn.Module):
     """
     flow propagation with self-attention on feature
     query: feature0, key: feature0, value: flow
@@ -54,7 +54,7 @@ class SelfAttnPropagation3D(nn.Module):
     def __init__(self, in_channels,
                  **kwargs,
                  ):
-        super(SelfAttnPropagation3D, self).__init__()
+        super(SelfCorrelationSoftmax3D, self).__init__()
 
         self.q_proj = nn.Linear(in_channels, in_channels)
         self.k_proj = nn.Linear(in_channels, in_channels)
@@ -66,22 +66,21 @@ class SelfAttnPropagation3D(nn.Module):
     def forward(self, feature0, flow,
                 **kwargs,
                 ):
-        # q, k: feature [B, C, H, W], v: flow [B, 2, H, W]
+        # q, k: feature [B, C, N], v: flow [B, 3, N]
 
         b, c, n = feature0.size()
 
-        query = feature0.permute(0, 2, 1)  # [B, H*W, C]
+        query = feature0.permute(0, 2, 1)  # [B, N, C]
 
-        query = self.q_proj(query)  # [B, H*W, C]
-        key = self.k_proj(query)  # [B, H*W, C]
-        #key = feature0.permute(0, 2, 1)
+        query = self.q_proj(query)  # [B, N, C]
+        key = self.k_proj(query)  # [B, N, C]
 
-        value = flow.view(b, flow.size(1), n).permute(0, 2, 1)  # [B, H*W, 2]
+        value = flow.view(b, flow.size(1), n).permute(0, 2, 1)  # [B, N, 2]
 
-        scores = torch.matmul(query, key.permute(0, 2, 1)) / (c ** 0.5)  # [B, H*W, H*W]
+        scores = torch.matmul(query, key.permute(0, 2, 1)) / (c ** 0.5)  # [B, N, N]
         prob = torch.softmax(scores, dim=-1)
 
-        out = torch.matmul(prob, value)  # [B, H*W, 2]
-        out = out.view(b, n, value.size(-1)).permute(0, 2, 1)  # [B, 2, H, W]
+        out = torch.matmul(prob, value)  # [B, N, 2]
+        out = out.view(b, n, value.size(-1)).permute(0, 2, 1)  # [B, 2, N]
 
         return out

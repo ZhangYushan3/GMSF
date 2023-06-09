@@ -11,10 +11,10 @@ from glob import glob
 
 @torch.no_grad()
 def validate_things(stage,
-                    model_point,
+                    model,
                     ):
     """ Peform validation using the Things (test) split """
-    model_point.eval()
+    model.eval()
 
     if stage == 'things_flownet3d':
         val_dataset = FlyingThings3D_flownet3d(train=False)
@@ -41,7 +41,7 @@ def validate_things(stage,
         input_h = data_dict['input_h']
         input_w = data_dict['input_w']
 
-        results_dict_point = model_point(pc0 = pc1, pc1 = pc2, origin_h=input_h, origin_w=input_w, 
+        results_dict_point = model(pc0 = pc1, pc1 = pc2, origin_h=input_h, origin_w=input_w, 
                              intrinsics = intrinsics
                              )
         flow_3d_pred = results_dict_point['flow_preds'][-1]
@@ -104,10 +104,10 @@ def validate_things(stage,
 
 @torch.no_grad()
 def validate_kitti(stage,
-                   model_point,
+                   model,
                    ):
     """ Peform validation using the KITTI-2015 (train) split """
-    model_point.eval()
+    model.eval()
 
     if stage == 'things_flownet3d':
         val_dataset = KITTI_flownet3d(split='training150')
@@ -134,7 +134,7 @@ def validate_kitti(stage,
         input_h = data_dict['input_h']
         input_w = data_dict['input_w']
 
-        # 
+        # adjust the mean & std of KITTI according to FlyingThings3D
         if stage == 'things_flownet3d':
             pc1[:,:,2] = (pc1[:,:,2] - 16.7652) *  6.7958 / 10.1550 + 20.771
             pc2[:,:,2] = (pc2[:,:,2] - 16.7652) *  6.7958 / 10.1550 + 20.771
@@ -157,14 +157,14 @@ def validate_kitti(stage,
             n3 = 5.4604 / 8.2174
 
 
-        results_dict_point = model_point(pc0 = pc1, pc1 = pc2, origin_h=input_h, origin_w=input_w,  
+        results_dict_point = model(pc0 = pc1, pc1 = pc2, origin_h=input_h, origin_w=input_w,  
                              intrinsics = intrinsics
                              )
 
         # useful when using parallel branches
         flow_3d_pred = results_dict_point['flow_preds'][-1]
 
-        # 
+        # adjust the mean & std of KITTI according to FlyingThings3D
         flow_3d_pred[:,2,:] = flow_3d_pred[:,2,:]/n1
         flow_3d_pred[:,1,:] = flow_3d_pred[:,1,:]/n2
         flow_3d_pred[:,0,:] = flow_3d_pred[:,0,:]/n3
