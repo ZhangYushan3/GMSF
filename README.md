@@ -183,11 +183,11 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
 ```
 
 # Pretrained Checkpoints
-Model trained on FTD_c: [MODEL_FTDc](https://drive.google.com/file/d/12ZSi6PwNcINSeXyVuJHZUMtmIMc2XJl9/view?usp=sharing)
+Model trained on F3D_c (HPLFlowNet / CamLiFlow with occlusion): [MODEL](https://drive.google.com/file/d/12ZSi6PwNcINSeXyVuJHZUMtmIMc2XJl9/view?usp=sharing)
 
-Model trained on FTD_o: [MODEL_FTDo](https://drive.google.com/file/d/1eH8HAm0IaZhC2Sy-xCV_vxTMfpiyUMxH/view?usp=sharing)
+Model trained on F3D_o (FlowNet3D with occlusion): [MODEL](https://drive.google.com/file/d/1eH8HAm0IaZhC2Sy-xCV_vxTMfpiyUMxH/view?usp=sharing)
 
-Model trained on FTD_s: [MODEL_FTDs](https://drive.google.com/file/d/1YtAhkRSYzg42RZzGrqqlEOOhEPSByB1D/view?usp=sharing)
+Model trained on F3D_s (HPLFlowNet without occlusion): [MODEL](https://drive.google.com/file/d/1YtAhkRSYzg42RZzGrqqlEOOhEPSByB1D/view?usp=sharing)
 
 ## BibTeX
 If you find our models useful, please consider citing our paper!
