@@ -6,6 +6,8 @@
 > [Yushan Zhang](), [Johan Edstedt](https://scholar.google.com/citations?user=Ul-vMR0AAAAJ), [Bastian Wandt](https://scholar.google.com/citations?user=z4aXEBYAAAAJ), [Per-Erik Forssén](https://scholar.google.com/citations?user=SZ6jH-4AAAAJ), [Maria Magnusson](), [Michael Felsberg](https://scholar.google.com/citations?&user=lkWfR08AAAAJ)  
 > Arxiv 2023
 
+<img src="visualization/Figure_3a.mp4" width=40%> <img src="visualization/Figure_3b.mp4" width=40%>
+
 ## Get started
 # Installation:
 
