@@ -12,7 +12,7 @@ from dataloader.datasets import build_train_dataset
 from utils import misc
 from utils.logger import Logger
 from loss.sceneflow_loss import sceneflow_loss_func
-from evaluate.evaluate import validate_things, validate_kitti
+from evaluate.evaluate import validate_things, validate_kitti, validate_waymo
 from models.gmsf import GMSF
 
 def get_args_parser():
@@ -22,8 +22,9 @@ def get_args_parser():
     parser.add_argument('--checkpoint_dir', default='checkpoints', type=str,
                         help='where to save the training log and models')
     parser.add_argument('--stage', default='things_subset', type=str,
-                        help='training stage on different datasets (things_subset / things_subset_non-occluded / things_flownet3d )')
-    parser.add_argument('--val_dataset', default=['things','kitti15'], type=str, nargs='+')
+                        help='training stage on different datasets (things_subset / things_subset_non-occluded / things_flownet3d / waymo )')
+    parser.add_argument('--val_dataset', default=['things'], type=str, nargs='+', 
+                        help='waymo / things / kitti15')
     # training
     parser.add_argument('--lr', default=2e-4, type=float)
     parser.add_argument('--scheduler', default='OneCycleLR', type=str)
@@ -176,6 +177,7 @@ def main(args):
             sceneflow_preds = results_dict_point['flow_preds']
 
             loss, metrics_3d = sceneflow_loss_func(sceneflow_preds, flow_3d)
+
             if isinstance(loss, float):
                 continue
             if torch.isnan(loss):
@@ -250,17 +252,36 @@ def val(args):
         model_without_ddp.load_state_dict(checkpoint['model'], strict=args.strict_resume)
     # evaluate
     if args.eval:
+        import timeit
         val_results = {}
+
+        if 'waymo' in args.val_dataset:
+            start = timeit.default_timer()
+            results_dict = validate_waymo(args.stage,
+                                          model_without_ddp,
+                                          )
+            val_results.update(results_dict)
+            stop = timeit.default_timer()
+            print('Time: ', stop - start)  
+
         if 'things' in args.val_dataset:
+            start = timeit.default_timer()
             results_dict = validate_things(args.stage,
                                            model_without_ddp,
                                            )
             val_results.update(results_dict)
+            stop = timeit.default_timer()
+            print('Time: ', stop - start)  
+
         if 'kitti15' in args.val_dataset:
+            start = timeit.default_timer()
             results_dict = validate_kitti(args.stage,
                                           model_without_ddp,
                                           )
             val_results.update(results_dict)
+            stop = timeit.default_timer()
+            print('Time: ', stop - start)  
+
 
         return
 

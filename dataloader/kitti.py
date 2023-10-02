@@ -158,8 +158,8 @@ class KITTI_flownet3d(torch.utils.data.Dataset): # flownet3d
         pc1 = np.concatenate((data['pos1'][:,1:2], data['pos1'][:,2:3], data['pos1'][:,0:1]), axis=1)
         pc2 = np.concatenate((data['pos2'][:,1:2], data['pos2'][:,2:3], data['pos2'][:,0:1]), axis=1)
         # limit max depth
-        pc1 = pc1[pc1[..., -1] < self.max_depth]
-        pc2 = pc2[pc2[..., -1] < self.max_depth]
+        #pc1 = pc1[pc1[..., -1] < self.max_depth]
+        #pc2 = pc2[pc2[..., -1] < self.max_depth]
         flow_3d = np.concatenate((data['gt'][:,1:2], data['gt'][:,2:3], data['gt'][:,0:1]), axis=1)
 
         # random sampling

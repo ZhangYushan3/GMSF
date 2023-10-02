@@ -1,4 +1,5 @@
 from dataloader.kitti import KITTI_flownet3d
+from dataloader.waymo import Waymo
 from dataloader.flyingthings3d import FlyingThings3D_subset, FlyingThings3D_flownet3d
 
 def build_train_dataset(args):
@@ -9,7 +10,8 @@ def build_train_dataset(args):
         train_dataset = FlyingThings3D_subset(split='train', occ=False)
     if args.stage == 'things_flownet3d':
         train_dataset = FlyingThings3D_flownet3d(train=True)
-
+    if args.stage == 'waymo':
+        train_dataset = Waymo(split='train')
 #    else:
 #        raise ValueError(f'stage {args.stage} is not supported')
 

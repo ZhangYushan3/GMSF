@@ -1,4 +1,4 @@
-# GMSF: Global Matching Scene Flow
+# GMSF: Global Matching Scene Flow (NeurIPS 2023 Accepted!)
 ### [Project Page (TODO)]() | [Paper](https://arxiv.org/abs/2305.17432)
 <br/>
 
@@ -6,9 +6,12 @@
 > [Yushan Zhang](), [Johan Edstedt](https://scholar.google.com/citations?user=Ul-vMR0AAAAJ), [Bastian Wandt](https://scholar.google.com/citations?user=z4aXEBYAAAAJ), [Per-Erik Forssén](https://scholar.google.com/citations?user=SZ6jH-4AAAAJ), [Maria Magnusson](), [Michael Felsberg](https://scholar.google.com/citations?&user=lkWfR08AAAAJ)  
 > Arxiv 2023
 
+## Get started
+
+Here are some demo results:
+
 <img src="visualization/Figure_3a.mp4" width=40%> <img src="visualization/Figure_3b.mp4" width=40%>
 
-## Get started
 # Installation:
 
 Create a conda environment:
@@ -26,7 +29,7 @@ pip install opencv-python open3d tensorboard imageio numba
 
 1. FlyingThings3D(HPLFlowNet without occlusion / CamLiFlow with occlusion):
 
-Download [FlyingThings3D](https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html).
+Download [FlyingThings3D_subset](https://lmb.informatik.uni-freiburg.de/resources/datasets/SceneFlowDatasets.en.html).
 flyingthings3d_disparity.tar.bz2, flyingthings3d_disparity_change.tar.bz2, FlyingThings3D_subset_disparity_occlusions.tar.bz2, FlyingThings3D_subset_flow.tar.bz2, FlyingThings3D_subset_flow_occlusions.tar.bz2 and FlyingThings3D_subset_image_clean.tar.bz2 are needed. Then extract the files in /path/to/flyingthings3d such that the directory looks like
 ```bash
 /path/to/flyingthings3d
@@ -94,6 +97,35 @@ python process_kitti.py datasets/KITTI_stereo2015/ SAVE_PATH/KITTI_processed_occ
 
 The processed data is also provided [here](https://drive.google.com/open?id=1XBsF35wKY0rmaL7x7grD_evvKCAccbKi) for download
 
+5. Waymo-Open(refer to [FH-Net](https://github.com/pigtigger/FH-Net)):
+Download the Waymo raw data from [link_to_waymo_open_dataset](https://console.cloud.google.com/storage/browser/waymo_open_dataset_v_1_4_0;tab=objects?pli=1&prefix=&forceOnObjectsSortingFiltering=false),run the following command to extract point clouds, 3D annotations, poses and other information form raw data.
+```bash
+cd gmsf
+python waymo_tools/waymo_extract.py
+
+```
+After extracting data, the folder structure is the same as below:
+```bash
+datasets
+├── waymo-open
+│   ├── scene_flow
+│       ├── ImageSets
+│       ├── train
+│       ├── valid
+├── train_extract
+│   ├── 000
+│   ├── 001
+│   ├── ...
+├── valid_extract
+│   ├── 000
+│   ├── 001
+│   ├── ...
+```
+Then create scene flow data by:
+```bash
+python waymo_tools/create_data.py --dataset_type waymo
+```
+
 # The datasets directory should be orginized as:
 ```bash
 datasets
@@ -111,6 +143,10 @@ datasets
 ├── KITTI_stereo2015
 │   ├── testing
 │   ├── training
+├── waymo-open
+│   ├── scene_flow
+│   ├── train_extract
+│   ├── valid_extract
 ```
 
 # Traning and Testing:
@@ -123,7 +159,7 @@ python main_gmsf.py \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels 128 \
+    --feature_channels_point 128 \
     --lr 2e-4 --batch_size 8 --num_steps 600000
 ```
 Training (HPLFlowNet without occlusion): 
@@ -135,8 +171,8 @@ python main_gmsf.py \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels 128 \
-    --lr 4e-4 --batch_size 8 --num_steps 600000
+    --feature_channels_point 128 \
+    --lr 2e-4 --batch_size 8 --num_steps 600000
 ```
 Training (FlowNet3D with occlusion): 
 ```bash
@@ -147,7 +183,19 @@ python main_gmsf.py \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels 128 \
+    --feature_channels_point 128 \
+    --lr 2e-4 --batch_size 8 --num_steps 600000
+```
+Training (Waymo-Open): 
+```bash
+cd gmsf
+python main_gmsf.py \
+    --checkpoint_dir checkpoints \
+    --stage waymo \
+    --backbone DGCNN \
+    --num_transformer_pt_layers 1 \
+    --num_transformer_layers 8 \
+    --feature_channels_point 128 \
     --lr 4e-4 --batch_size 8 --num_steps 600000
 ```
 Testing (HPLFlowNet / CamLiFlow with occlusion): 
@@ -158,7 +206,7 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels 128 \
+    --feature_channels_point 128 \
     --eval
 ```
 Testing (HPLFlowNet without occlusion):  
@@ -169,7 +217,7 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels 128 \
+    --feature_channels_point 128 \
     --eval
 ```
 Testing (FlowNet3D with occlusion): 
@@ -180,16 +228,29 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
     --num_transformer_layers 8 \
-    --feature_channels 128 \
+    --feature_channels_point 128 \
+    --eval
+```
+Testing (Waymo-Open): 
+```bash
+cd gmsf
+python main_gmsf.py --resume checkpoints/step_600000.pth \
+    --stage waymo \
+    --backbone DGCNN \
+    --num_transformer_pt_layers 1 \
+    --num_transformer_layers 8 \
+    --feature_channels_point 128 \
     --eval
 ```
 
 # Pretrained Checkpoints
-Model trained on F3D_c (HPLFlowNet / CamLiFlow with occlusion): [MODEL](https://drive.google.com/file/d/12ZSi6PwNcINSeXyVuJHZUMtmIMc2XJl9/view?usp=sharing)
+Model trained on FTD_c: [MODEL_FTDc](https://drive.google.com/file/d/1HbqOWYlCkfRyoQg4ubqobFfIGz2EGuJ9/view?usp=sharing)
 
-Model trained on F3D_o (FlowNet3D with occlusion): [MODEL](https://drive.google.com/file/d/1eH8HAm0IaZhC2Sy-xCV_vxTMfpiyUMxH/view?usp=sharing)
+Model trained on FTD_o: [MODEL_FTDo](https://drive.google.com/file/d/1dLPZp4LGEx5PJrkIn2LNPa36qw33hBMK/view?usp=sharing)
 
-Model trained on F3D_s (HPLFlowNet without occlusion): [MODEL](https://drive.google.com/file/d/1YtAhkRSYzg42RZzGrqqlEOOhEPSByB1D/view?usp=sharing)
+Model trained on FTD_s: [MODEL_FTDs](https://drive.google.com/file/d/1AWWVgSx_NBVTNQyUJjXZ_xDE7hbRAWU7/view?usp=sharing)
+
+Model trained on Waymo: [MODEL_Waymo](https://drive.google.com/file/d/1RJLgqpPqw53JKytKwKffo7iPoughkLYO/view?usp=sharing)
 
 ## BibTeX
 If you find our models useful, please consider citing our paper!

@@ -18,8 +18,6 @@ def sceneflow_loss_func(flow_preds, flow_gt,
             epe_l1 = torch.pow(diff.abs().sum(dim=1) + 0.01, 0.4).mean()
         
         i_weight = gamma ** (n_predictions - i - 1)
-
-
         flow_loss += i_weight * epe_l1
 
         # compute endpoint error

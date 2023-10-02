@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 from .transformer import FeatureTransformer3D, FeatureTransformer3D_PT
 from .matching import global_correlation_softmax_3d, SelfCorrelationSoftmax3D
 from .backbone import PointNet, DGCNN, MLP
@@ -106,6 +107,11 @@ class GMSF(nn.Module):
         # self correlation with self-feature similarity
         self.feature_flow_attn = SelfCorrelationSoftmax3D(in_channels=feature_channels)
 
+#   test flops
+#    def forward(self, pc0, pc1=None, origin_h=540, origin_w=960,
+#                intrinsics=torch.from_numpy(np.float32([[1050, 479.5, 269.5]])).cuda(),
+#                **kwargs,
+#                ):
 
     def forward(self, pc0, pc1, origin_h, origin_w,
                 intrinsics=None,
@@ -134,14 +140,11 @@ class GMSF(nn.Module):
             'cx': (parallel_sensor_size[1] - 1) / 2,
             'cy': (parallel_sensor_size[0] - 1) / 2,
         } 
-
+#       test flops
+        #pc1 = pc0[:,:,3:6]
+        #pc0 = pc0[:,:,3:6]
         pc0 = torch.permute(pc0, (0, 2, 1)) # torch.Size([batch, n_point, 3]) -> torch.Size([batch, 3, n_point])
         pc1 = torch.permute(pc1, (0, 2, 1)) # torch.Size([batch, n_point, 3]) -> torch.Size([batch, 3, n_point])
-
-        # # Inverse Depth Sampling
-        pc0 = perspect2parallel(pc0, persp_cam_info, paral_cam_info)
-        pc1 = perspect2parallel(pc1, persp_cam_info, paral_cam_info)
-
 
         xyzs1, xyzs2 = pc0, pc1
         if self.backbone=='pointnet':
@@ -170,16 +173,9 @@ class GMSF(nn.Module):
         # flow prediction with cros-attn
         flow_pred = global_correlation_softmax_3d(feature0, feature1, xyzs1, xyzs2)[0]
         sceneflow = sceneflow + flow_pred if sceneflow is not None else flow_pred
-        if self.training:
-            flow_preds.append(sceneflow)
         # flow refinement with self-attn
-        sceneflow = self.feature_flow_attn(feature0, sceneflow.detach())
+        sceneflow = self.feature_flow_attn(feature0, sceneflow)
         flow_preds.append(sceneflow)
-
-        # Inverse Depth Sampling
-        for idx, flow12_3d in enumerate(flow_preds):
-            flow_preds[idx] = parallel2perspect(xyzs1 + flow12_3d, persp_cam_info, paral_cam_info) - \
-                            parallel2perspect(xyzs1, persp_cam_info, paral_cam_info)
 
         results_dict.update({'flow_preds': flow_preds})
 
