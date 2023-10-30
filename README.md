@@ -10,7 +10,7 @@
 
 Here are some demo results:
 
-<img src="visualization/Figure3.mp4" width=90%>
+<img src="visualization/Figure_3a.mp4" width=90%>
 
 # Installation:
 
