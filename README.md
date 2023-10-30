@@ -8,9 +8,14 @@
 
 ## Get started
 
+
 Here are some demo results:
 
-<img src="visualization/Figure_3a.mp4" width=90%>
+https://github.com/ZhangYushan3/GMSF/assets/22053118/1e4340bd-590c-411f-86e2-e2662da751de
+
+
+
+
 
 # Installation:
 
