@@ -43,7 +43,7 @@ def get_args_parser():
     parser.add_argument('--backbone', default='DGCNN', type=str, help='feature extraction backbone (DGCNN / pointnet / mlp)')
     parser.add_argument('--ffn_dim_expansion', default=4, type=int)
     parser.add_argument('--num_transformer_pt_layers', default=1, type=int)
-    parser.add_argument('--num_transformer_layers', default=8, type=int)
+    parser.add_argument('--num_transformer_layers', default=10, type=int)
     # evaluation
     parser.add_argument('--eval', action='store_true',
                         help='evaluation after training done')

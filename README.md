@@ -10,7 +10,7 @@
 
 Here are some demo results:
 
-<img src="visualization/Figure_3a.mp4" width=40%> <img src="visualization/Figure_3b.mp4" width=40%>
+<img src="visualization/Figure3.mp4" width=90%>
 
 # Installation:
 
@@ -158,7 +158,7 @@ python main_gmsf.py \
     --stage things_subset \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
-    --num_transformer_layers 8 \
+    --num_transformer_layers 10 \
     --feature_channels_point 128 \
     --lr 2e-4 --batch_size 8 --num_steps 600000
 ```
@@ -170,7 +170,7 @@ python main_gmsf.py \
     --stage things_subset_non-occluded \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
-    --num_transformer_layers 8 \
+    --num_transformer_layers 10 \
     --feature_channels_point 128 \
     --lr 2e-4 --batch_size 8 --num_steps 600000
 ```
@@ -182,7 +182,7 @@ python main_gmsf.py \
     --stage things_flownet3d \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
-    --num_transformer_layers 8 \
+    --num_transformer_layers 10 \
     --feature_channels_point 128 \
     --lr 2e-4 --batch_size 8 --num_steps 600000
 ```
@@ -194,9 +194,9 @@ python main_gmsf.py \
     --stage waymo \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
-    --num_transformer_layers 8 \
+    --num_transformer_layers 10 \
     --feature_channels_point 128 \
-    --lr 4e-4 --batch_size 8 --num_steps 600000
+    --lr 1e-4 --batch_size 8 --num_steps 600000
 ```
 Testing (HPLFlowNet / CamLiFlow with occlusion): 
 ```bash
@@ -205,7 +205,7 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --stage things_subset \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
-    --num_transformer_layers 8 \
+    --num_transformer_layers 10 \
     --feature_channels_point 128 \
     --eval
 ```
@@ -216,7 +216,7 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --stage things_subset_non-occluded \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
-    --num_transformer_layers 8 \
+    --num_transformer_layers 10 \
     --feature_channels_point 128 \
     --eval
 ```
@@ -227,7 +227,7 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --stage things_flownet3d \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
-    --num_transformer_layers 8 \
+    --num_transformer_layers 10 \
     --feature_channels_point 128 \
     --eval
 ```
@@ -238,19 +238,19 @@ python main_gmsf.py --resume checkpoints/step_600000.pth \
     --stage waymo \
     --backbone DGCNN \
     --num_transformer_pt_layers 1 \
-    --num_transformer_layers 8 \
+    --num_transformer_layers 10 \
     --feature_channels_point 128 \
     --eval
 ```
 
 # Pretrained Checkpoints
-Model trained on FTD_c: [MODEL_FTDc](https://drive.google.com/file/d/1HbqOWYlCkfRyoQg4ubqobFfIGz2EGuJ9/view?usp=sharing)
+Model trained on FTD_c: [MODEL_FTDc](https://drive.google.com/file/d/15W-kG2ugEeOW1sxcMH4FBY9mYf0J-WuN/view?usp=sharing)
 
-Model trained on FTD_o: [MODEL_FTDo](https://drive.google.com/file/d/1dLPZp4LGEx5PJrkIn2LNPa36qw33hBMK/view?usp=sharing)
+Model trained on FTD_o: [MODEL_FTDo](https://drive.google.com/file/d/1NRJp1pYAoZuG0IAlW8dcOAsUBtcQzJfT/view?usp=sharing)
 
-Model trained on FTD_s: [MODEL_FTDs](https://drive.google.com/file/d/1AWWVgSx_NBVTNQyUJjXZ_xDE7hbRAWU7/view?usp=sharing)
+Model trained on FTD_s: [MODEL_FTDs](https://drive.google.com/file/d/1laQWua32MFDE7IQT6jCeen8Dobhq_7dF/view?usp=sharing)
 
-Model trained on Waymo: [MODEL_Waymo](https://drive.google.com/file/d/1RJLgqpPqw53JKytKwKffo7iPoughkLYO/view?usp=sharing)
+Model trained on Waymo: [MODEL_Waymo](https://drive.google.com/file/d/1DJeqUN5Xutden5I8az0AMDOv3k5vrcuj/view?usp=sharing)
 
 ## BibTeX
 If you find our models useful, please consider citing our paper!
