@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="GMSF: Global Matching Scene Flow">
+  <meta name="keywords" content="Scene Flow Estimation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GMSF: Global Matching Scene Flow</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="static/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="static/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="static/favicon/favicon-16x16.png">
+  <link rel="manifest" href="static/favicon/site.webmanifest">
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">GMSF: Global Matching Scene Flow</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://liu.se/en/employee/segma96">YushanZhang</a>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=Ul-vMR0AAAAJ">Johan Edstedt</a>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.de/citations?user=z4aXEBYAAAAJ&hl=de">Bastian Wandt</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=SZ6jH-4AAAAJ&hl=en">Per-Erik Forssén</a>
+            </span>  
+            <span class="author-block">
+              <a href="https://liu.se/en/employee/segma96">Maria Magnusson</a>
+            </span>  
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?&user=lkWfR08AAAAJ">Michael Felsberg</a>
+            </span>            
+             <br>
+          </div>
+
+          <div class="is-size-6 publication-authors">
+            <span class="author-block">Computer Vision Laboratory, Linköping University &nbsp;&nbsp;</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+  <!--             <span class="link-block">
+                <a href="static/paper.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span> -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2305.17432"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- supp PDF Link. -->
+<!--               <span class="link-block">
+                <a href="static/supp.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Supp</span>
+                </a>
+              </span> -->
+              <!-- Video Link. 
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> 
+              -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/ZhangYushan3/GMSF"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+    
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+        <div style="display: flex; justify-content: center;">
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; margin-right: 3px;">
+                <img src="static/images/Framework.png" alt="Source Image" style="width:100%;"/>
+            </div>
+        </div>
+        <div class="content has-text-justified">
+            <p style="font-size: 15px;">
+              <strong>Method Overview</strong>
+            </p>
+        </div>
+    </div>
+    
+
+<section class="section">
+  <div class="container">
+
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-two-thirds">
+        <h2 class="title is-2">TLDR</h2>
+        <div class="content has-text-justified">
+          <p>
+            We propose a significantly simpler single-scale one-shot global matching to address the scene flow estimation.
+            <br>
+            Our key finding is that reliable feature similarity between point pairs is essential and sufficient to estimate accurate scene flow.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/ Abstract. -->
+
+</div> 
+
+<section class="section">
+  <div class="container">
+
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-two-thirds">
+        <h2 class="title is-2">Method</h2>
+        <div class="content has-text-justified">
+          <p>
+            We propose Dense Kernelized Feature Matching (DKM). Our approach consists of three main contributions:
+            <ol>
+              <li>A hybrid local-global-cross transformer architecture is introduced to learn accurate and robust feature representations of 3D point clouds.</li>
+              <li>Based on the similarity of the hybrid features, we propose to use a global matching process to solve the scene flow estimation.</li>
+              <li>Extensive experiments on popular datasets show that the proposed method outperforms previous scene flow methods by a large margin.</li>
+            </ol>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/ Abstract. -->
+
+</div> 
+
+
+<section class="section" id="BibTeX">
+  <div class="container content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>
+      @article{zhang2023gmsf,
+        title={GMSF: Global Matching Scene Flow},
+        author={Zhang, Yushan and Edstedt, Johan and Wandt, Bastian and Forss{\'e}n, Per-Erik and Magnusson, Maria and Felsberg, Michael},
+        journal={arXiv preprint arXiv:2305.17432},
+        year={2023}
+      }
+</code></pre>
+  </div>
+</section>
+    
+
+<footer class="footer">
+  <div align="center" class="container">
+    <div class="columns is-centered">
+        <div class="content">
+            Website template from <a href="https://github.com/nerfies/nerfies.github.io">here</a>.
+        </div>
+      </div>
+    </div>
+</footer>
+
+</body>
+</html>
