@@ -109,7 +109,7 @@ class TransformerBlock(nn.Module):
 
 class FeatureTransformer3D(nn.Module):
     def __init__(self,
-                 num_layers=6,
+                 num_layers=10,
                  d_model=128,
                  ffn_dim_expansion=4,
                  ):

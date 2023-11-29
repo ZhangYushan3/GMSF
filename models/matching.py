@@ -75,12 +75,12 @@ class SelfCorrelationSoftmax3D(nn.Module):
         query = self.q_proj(query)  # [B, N, C]
         key = self.k_proj(query)  # [B, N, C]
 
-        value = flow.view(b, flow.size(1), n).permute(0, 2, 1)  # [B, N, 2]
+        value = flow.view(b, flow.size(1), n).permute(0, 2, 1)  # [B, N, 3]
 
         scores = torch.matmul(query, key.permute(0, 2, 1)) / (c ** 0.5)  # [B, N, N]
         prob = torch.softmax(scores, dim=-1)
 
-        out = torch.matmul(prob, value)  # [B, N, 2]
-        out = out.view(b, n, value.size(-1)).permute(0, 2, 1)  # [B, 2, N]
+        out = torch.matmul(prob, value)  # [B, N, 3]
+        out = out.view(b, n, value.size(-1)).permute(0, 2, 1)  # [B, 3, N]
 
         return out

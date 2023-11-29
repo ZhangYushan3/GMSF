@@ -6,63 +6,6 @@ from .transformer import FeatureTransformer3D, FeatureTransformer3D_PT
 from .matching import global_correlation_softmax_3d, SelfCorrelationSoftmax3D
 from .backbone import PointNet, DGCNN, MLP
 
-def parallel2perspect(xyz, perspect_camera_info, parallel_camera_info):
-    src_x, src_y, src_z = xyz[:, 0, :], xyz[:, 1, :], xyz[:, 2, :]  # [batch_size, n_points]
-
-    # scaling
-    perspect_h, perspect_w = perspect_camera_info['sensor_h'], perspect_camera_info['sensor_w']
-    parallel_h, parallel_w = parallel_camera_info['sensor_h'], parallel_camera_info['sensor_w']
-
-    scale_ratio_w = (parallel_w - 1) / (perspect_w - 1)
-    scale_ratio_h = (parallel_h - 1) / (perspect_h - 1)
-
-    src_x = (src_x + (parallel_w - 1) / 2) / scale_ratio_w
-    src_y = (src_y + (parallel_h - 1) / 2) / scale_ratio_h
-    src_z = src_z / min(scale_ratio_w, scale_ratio_h)
-    # transformation
-    batch_size, n_points = src_x.shape
-    f = perspect_camera_info['f'][:, None].expand([batch_size, n_points])
-    cx = perspect_camera_info['cx'][:, None].expand([batch_size, n_points])
-    cy = perspect_camera_info['cy'][:, None].expand([batch_size, n_points])
-
-    dst_z = torch.exp((src_z - 1) / f)
-    dst_x = (src_x - cx) * dst_z / f
-    dst_y = (src_y - cy) * dst_z / f
-
-    return torch.cat([
-        dst_x[:, None, :],
-        dst_y[:, None, :],
-        dst_z[:, None, :],
-    ], dim=1)
-
-def perspect2parallel(xyz, perspect_camera_info, parallel_camera_info):
-    src_x, src_y, src_z = xyz[:, 0, :], xyz[:, 1, :], xyz[:, 2, :]  # [batch_size, n_points]
-
-    # transformation
-    batch_size, n_points = src_x.shape
-    f = perspect_camera_info['f'][:, None].expand([batch_size, n_points])
-    cx = perspect_camera_info['cx'][:, None].expand([batch_size, n_points])
-    cy = perspect_camera_info['cy'][:, None].expand([batch_size, n_points])
-
-    dst_x = cx + (f / src_z) * src_x
-    dst_y = cy + (f / src_z) * src_y
-    dst_z = f * torch.log(src_z) + 1
-
-    # scaling
-    perspect_h, perspect_w = perspect_camera_info['sensor_h'], perspect_camera_info['sensor_w']
-    parallel_h, parallel_w = parallel_camera_info['sensor_h'], parallel_camera_info['sensor_w']
-
-    scale_ratio_w = (parallel_w - 1) / (perspect_w - 1)
-    scale_ratio_h = (parallel_h - 1) / (perspect_h - 1)
-
-    dst_xyz = torch.cat([
-        dst_x[:, None, :] * scale_ratio_w - (parallel_w - 1) / 2,
-        dst_y[:, None, :] * scale_ratio_h - (parallel_h - 1) / 2,
-        dst_z[:, None, :] * min(scale_ratio_w, scale_ratio_h),
-    ], dim=1)
-
-    return dst_xyz
-
 class GMSF(nn.Module):
     def __init__(self,
                  backbone=None,
@@ -107,42 +50,13 @@ class GMSF(nn.Module):
         # self correlation with self-feature similarity
         self.feature_flow_attn = SelfCorrelationSoftmax3D(in_channels=feature_channels)
 
-#   test flops
-#    def forward(self, pc0, pc1=None, origin_h=540, origin_w=960,
-#                intrinsics=torch.from_numpy(np.float32([[1050, 479.5, 269.5]])).cuda(),
-#                **kwargs,
-#                ):
-
-    def forward(self, pc0, pc1, origin_h, origin_w,
-                intrinsics=None,
+    def forward(self, pc0, pc1,
                 **kwargs,
                 ):
 
         results_dict = {}
         flow_preds = []
 
-        persp_cam_info = {
-            'projection_mode': 'perspective',
-            'sensor_h': origin_h,
-            'sensor_w': origin_w,
-            'f': intrinsics[:, 0],
-            'cx': intrinsics[:, 1],
-            'cy': intrinsics[:, 2],
-        }
-        parallel_sensor_size = (
-            origin_h // 32,
-            origin_w // 32,
-        ) 
-        paral_cam_info = {
-            'projection_mode': 'parallel',
-            'sensor_h': parallel_sensor_size[0],
-            'sensor_w': parallel_sensor_size[1],
-            'cx': (parallel_sensor_size[1] - 1) / 2,
-            'cy': (parallel_sensor_size[0] - 1) / 2,
-        } 
-#       test flops
-        #pc1 = pc0[:,:,3:6]
-        #pc0 = pc0[:,:,3:6]
         pc0 = torch.permute(pc0, (0, 2, 1)) # torch.Size([batch, n_point, 3]) -> torch.Size([batch, 3, n_point])
         pc1 = torch.permute(pc1, (0, 2, 1)) # torch.Size([batch, n_point, 3]) -> torch.Size([batch, 3, n_point])
 

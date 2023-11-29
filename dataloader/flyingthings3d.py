@@ -73,12 +73,8 @@ class FlyingThings3D_subset(torch.utils.data.Dataset):
         intrinsics = torch.from_numpy(np.float32([f, cx, cy]))
         occ_mask_3d = torch.from_numpy(occ_mask_3d)
 
-        data_dict['input_h'] = 540
-        data_dict['input_w'] = 960
-        data_dict['flow_2d'] = flow_2d
         data_dict['pcs'] = pcs
         data_dict['flow_3d'] = flow_3d
-        data_dict['intrinsics'] = intrinsics
         data_dict['occ_mask_3d'] = occ_mask_3d
 
         return data_dict
@@ -151,11 +147,8 @@ class FlyingThings3D_flownet3d():
         intrinsics = torch.from_numpy(np.float32([f, cx, cy]))
         occ_mask_3d = torch.from_numpy(~mask1_)
 
-        data_dict['input_h'] = 540
-        data_dict['input_w'] = 960
         data_dict['pcs'] = pcs
         data_dict['flow_3d'] = flow_3d
-        data_dict['intrinsics'] = intrinsics
         data_dict['occ_mask_3d'] = occ_mask_3d
 
         return data_dict

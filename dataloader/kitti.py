@@ -57,8 +57,6 @@ class KITTI_hplflownet(torch.utils.data.Dataset): # hplflownet
         flow_3d = torch.from_numpy(sf_transformed).permute(1, 0).float()
         intrinsics = torch.from_numpy(np.float32([f, cx, cy]))
 
-        data_dict['input_h'] = 384
-        data_dict['input_w'] = 1248
         data_dict['pcs'] = pcs
         data_dict['flow_3d'] = flow_3d
         data_dict['intrinsics'] = intrinsics
@@ -173,9 +171,6 @@ class KITTI_flownet3d(torch.utils.data.Dataset): # flownet3d
         flow_3d = torch.from_numpy(flow_3d).permute(1, 0).float()
         intrinsics = torch.from_numpy(np.float32([f, cx, cy]))
 
-        # images from KITTI have various sizes, padding them to a unified size of 1242x376
-        data_dict['input_h'] = 384
-        data_dict['input_w'] = 1248
         data_dict['pcs'] = pcs
         data_dict['flow_3d'] = flow_3d
         data_dict['intrinsics'] = intrinsics

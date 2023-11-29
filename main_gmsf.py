@@ -5,7 +5,6 @@ import argparse
 import numpy as np
 import os
 from torch.utils.tensorboard import SummaryWriter
-#import wandb
 import torch.nn.functional as F
 
 from dataloader.datasets import build_train_dataset
@@ -23,7 +22,7 @@ def get_args_parser():
                         help='where to save the training log and models')
     parser.add_argument('--stage', default='things_subset', type=str,
                         help='training stage on different datasets (things_subset / things_subset_non-occluded / things_flownet3d / waymo )')
-    parser.add_argument('--val_dataset', default=['things'], type=str, nargs='+', 
+    parser.add_argument('--val_dataset', default=['things', 'kitti15'], type=str, nargs='+', 
                         help='waymo / things / kitti15')
     # training
     parser.add_argument('--lr', default=2e-4, type=float)
@@ -142,16 +141,6 @@ def main(args):
     summary_writer = SummaryWriter(args.checkpoint_dir)
     logger = Logger(lr_scheduler, summary_writer, args.summary_freq,
                     start_step=start_step)
-#    wandb.init(
-#        # Set the project where this run will be logged
-#        project="sceneflow", 
-#        # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
-#        name=f"experiment_{args.checkpoint_dir}", 
-#        # Track hyperparameters and run metadata
-#        config={
-#        "architecture": "GMSceneflow",
-#        "dataset": "FlyingThings",
-#        })
     # start training
     total_steps = start_step
     epoch = start_epoch
@@ -165,15 +154,8 @@ def main(args):
             flow_3d = sample['flow_3d'].to(device)
             pc1 = pcs[:,:,0:3].to(device)
             pc2 = pcs[:,:,3:6].to(device)
-            #sceneflow_gt = flow_3d[:,:3,:].to(device)
-            #scenevalid = sample['occ_mask_3d'].to(device)
-            intrinsics = sample['intrinsics'].to(device)
-            input_h = sample['input_h'][0].item()
-            input_w = sample['input_w'][0].item()
 
-            results_dict_point = model(pc0 = pc1, pc1 = pc2, origin_h=input_h, origin_w=input_w, 
-                                 intrinsics = intrinsics
-                                 )
+            results_dict_point = model(pc0 = pc1, pc1 = pc2)
             sceneflow_preds = results_dict_point['flow_preds']
 
             loss, metrics_3d = sceneflow_loss_func(sceneflow_preds, flow_3d)
@@ -193,9 +175,6 @@ def main(args):
             lr_scheduler.step()
             # Tensorboard / wandb
             logger.push(metrics_3d)
-            #logger.add_image_summary(img1, img2, flow_preds, flow_gt)
-#            if total_steps % args.summary_freq == 0:
-#                wandb.log({"epe3d": metrics_3d['epe3d'], "acc3d_5cm": metrics_3d['acc3d_5cm'], "acc3d_10cm": metrics_3d['acc3d_10cm']})
             total_steps += 1
             # save checkpoint of specific epoch
             if total_steps % args.save_ckpt_freq == 0 or total_steps == args.num_steps:
