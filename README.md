@@ -3,7 +3,7 @@
 <br/>
 
 > GMSF: Global Matching Scene Flow  
-> [Yushan Zhang](https://scholar.google.com/citations?hl=en&user=mvY4rdIAAAAJ&view_op=list_works&gmla=AH70aAUXDI8ueCfAPk4oG6bQTrbAvzDti376ccnS6yvwbut0V64oNJ6MV2PdU-IIr_WOs8uzFuXa9h77RhV7lZ19QE_NjMJHOmc2DQ), [Johan Edstedt](https://scholar.google.com/citations?user=Ul-vMR0AAAAJ), [Bastian Wandt](https://scholar.google.com/citations?user=z4aXEBYAAAAJ), [Per-Erik Forssén](https://scholar.google.com/citations?user=SZ6jH-4AAAAJ), [Maria Magnusson](), [Michael Felsberg](https://scholar.google.com/citations?&user=lkWfR08AAAAJ)  
+> [Yushan Zhang](https://scholar.google.com/citations?user=mvY4rdIAAAAJ&hl=en&oi=sra), [Johan Edstedt](https://scholar.google.com/citations?user=Ul-vMR0AAAAJ), [Bastian Wandt](https://scholar.google.com/citations?user=z4aXEBYAAAAJ), [Per-Erik Forssén](https://scholar.google.com/citations?user=SZ6jH-4AAAAJ), [Maria Magnusson](), [Michael Felsberg](https://scholar.google.com/citations?&user=lkWfR08AAAAJ)  
 > NeurISP 2023
 
 ## Get started
