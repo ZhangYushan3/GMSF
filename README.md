@@ -4,7 +4,7 @@
 
 > GMSF: Global Matching Scene Flow  
 > [Yushan Zhang](https://scholar.google.com/citations?user=mvY4rdIAAAAJ&hl=en&oi=sra), [Johan Edstedt](https://scholar.google.com/citations?user=Ul-vMR0AAAAJ), [Bastian Wandt](https://scholar.google.com/citations?user=z4aXEBYAAAAJ), [Per-Erik Forssén](https://scholar.google.com/citations?user=SZ6jH-4AAAAJ), [Maria Magnusson](), [Michael Felsberg](https://scholar.google.com/citations?&user=lkWfR08AAAAJ)  
-> NeurISP 2023
+> NeurIPS 2023
 
 ## Get started
 
